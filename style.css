@@ -36,12 +36,14 @@ h1 {
   overflow: hidden;
 }
 
+/* ── 입력 필드 ── */
 #item-input {
   flex: 1;
   padding: 12px 16px;
   border: none;
   font-size: 1rem;
   line-height: 1.6;
+  margin-right: 8px; /* 추가: 버튼과의 간격 */
 }
 
 #item-form button {
