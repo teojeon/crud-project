@@ -4,83 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Type Anything</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Type Anything</h1>
-  <form id="item-form">
-    <input type="text" id="item-input" placeholder="항목 입력" required />
-    <button type="submit">추가</button>
-  </form>
-  <hr/>
-  <ul id="item-list"></ul>
+  <main class="container">
+    <h1>Type Anything</h1>
+    
+    <form id="item-form">
+      <input type="text" id="item-input" placeholder="할 일을 입력하세요..." required />
+      <button type="submit">추가</button>
+    </form>
 
-  <script>
-    const apiUrl = 'http://localhost:3000/items';
+    <ul id="item-list">
+      <!-- 항목이 JS로 삽입됨 -->
+    </ul>
+  </main>
+ <footer class="site-footer">
+    <div class="footer-content">
+      <p>회사명: 투닉스(Toonix) | 대표자: 전민철</p>
+      <p>사업자등록번호: 551-15-02591</p>
+      <p>주소: 서울특별시 중구 퇴계로 36길 2</p>
+      <p>이메일: teo@toonix.co | 전화: +82)10-5766-9370</p>
+      <p class="copyright">© 2025 Type Anything. All rights reserved.</p>
+    </div>
+  </footer>
+<script src="script.js"></script>
 
-    // 전체 항목 불러오기
-    async function fetchItems() {
-      try {
-        const res = await fetch(apiUrl);
-        const items = await res.json();
-        const list = document.getElementById('item-list');
-        list.innerHTML = '';
-        items.forEach(item => {
-          const li = document.createElement('li');
-          li.className = 'item';
-          li.textContent = item.name;
-          // 수정 버튼
-          const editBtn = document.createElement('button');
-          editBtn.textContent = '수정';
-          editBtn.onclick = () => editItem(item);
-          // 삭제 버튼
-          const delBtn = document.createElement('button');
-          delBtn.textContent = '삭제';
-          delBtn.onclick = () => deleteItem(item.id);
-          li.append(editBtn, delBtn);
-          list.appendChild(li);
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // 항목 추가
-    document.getElementById('item-form').addEventListener('submit', async e => {
-      e.preventDefault();
-      const input = document.getElementById('item-input');
-      const name = input.value.trim();
-      if (!name) return;
-      await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
-      });
-      input.value = '';
-      fetchItems();
-    });
-
-    // 항목 수정
-    async function editItem(item) {
-      const newName = prompt('새 이름을 입력하세요', item.name);
-      if (!newName) return;
-      await fetch(`${apiUrl}/${item.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName })
-      });
-      fetchItems();
-    }
-
-    // 항목 삭제
-    async function deleteItem(id) {
-      if (!confirm('정말 삭제하시겠어요?')) return;
-      await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
-      fetchItems();
-    }
-
-    // 초기 로드
-    fetchItems();
-  </script>
 </body>
 </html>
