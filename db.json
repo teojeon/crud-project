@@ -24,5 +24,17 @@
       "id": 1751981062967,
       "name": "테스트 아이템"
     }
+  ],
+  "users": [
+    {
+      "id": 1751982700333,
+      "email": "test@toonix.co",
+      "password": "$2b$10$cjB6pPEE2e6V0SgqekY3r.hviQwawKgtWw.8Lr9ZMqm8DMsrxKcW."
+    },
+    {
+      "id": 1751982974489,
+      "email": "teo@toonix.co",
+      "password": "$2b$10$zV/Gj7OgY9MmX8kkzo7X..Mu4NBoswmJ6W8YuTRMy7FY.o63MQsQO"
+    }
   ]
 }

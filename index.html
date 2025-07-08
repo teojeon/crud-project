@@ -18,6 +18,29 @@
     <ul id="item-list">
       <!-- 항목이 JS로 삽입됨 -->
     </ul>
+
+    <!-- 기존 main 아래에 추가 -->
+<div id="auth-modal" class="modal hidden">
+  <div class="modal-content">
+    <h2 id="auth-title">로그인</h2>
+    <form id="auth-form">
+      <input type="email" id="auth-email" placeholder="이메일" required />
+      <input type="password" id="auth-password" placeholder="비밀번호" required />
+      <button type="submit">확인</button>
+    </form>
+    <p class="toggle-auth">
+      계정이 없으신가요? <button id="toggle-auth-mode">회원가입</button>
+    </p>
+  </div>
+</div>
+
+<!-- 헤더 오른쪽 상단 -->
+<div id="auth-area" class="auth-area">
+  <span id="auth-user"></span>
+  <button id="login-btn">로그인</button>
+  <button id="logout-btn" class="hidden">로그아웃</button>
+</div>
+
   </main>
  <footer class="site-footer">
     <div class="footer-content">
@@ -29,6 +52,7 @@
     </div>
   </footer>
 <script src="script.js"></script>
+<script src="auth.js"></script>
 
 </body>
 </html>
