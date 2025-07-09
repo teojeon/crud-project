@@ -3,17 +3,18 @@ const express = require('express');
 const fs = require('fs');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const cors = require('cors');
 const multer  = require('multer');
 const path = require('path');
 
 const app = express();
-app.use(express.json());
-app.use(cors({
-  origin: 'http://127.0.0.1:5500',
-  credentials: true,
-}));
 
+// ① public 폴더 정적 파일 서빙 (index.html, script.js, auth.js, style.css 등)
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ② JSON 바디 파싱
+app.use(express.json());
+
+// ③ 세션 설정 (Same-Origin이므로 CORS 불필요)
 app.use(session({
   secret: 'toonix-secret-key',
   resave: false,
@@ -24,14 +25,12 @@ app.use(session({
   }
 }));
 
-// 업로드된 이미지를 제공할 정적 경로 설정
+// ④ 업로드된 이미지를 제공할 정적 경로 설정
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// multer 설정: 저장 위치(public/uploads)와 파일명 규칙
+// ⑤ multer 설정: 저장 위치(public/uploads)와 파일명 규칙
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads');
-  },
+  destination: (req, file, cb) => cb(null, 'public/uploads'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     const name = path.basename(file.originalname, ext);
@@ -42,7 +41,7 @@ const upload = multer({ storage });
 
 const DB_PATH = './db.json';
 
-// Helper: DB 로드/저장
+// DB 로드/저장 헬퍼
 function loadDB() {
   return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
 }
@@ -54,9 +53,9 @@ function saveDB(data) {
 app.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   const db = loadDB();
-  const exists = db.users.find(u => u.email === email);
-  if (exists) return res.status(400).json({ message: '이미 등록된 이메일입니다.' });
-
+  if (db.users.find(u => u.email === email)) {
+    return res.status(400).json({ message: '이미 등록된 이메일입니다.' });
+  }
   const hashed = await bcrypt.hash(password, 10);
   const newUser = { id: Date.now(), email, password: hashed, role: 'user' };
   db.users.push(newUser);
@@ -72,8 +71,9 @@ app.post('/login', async (req, res) => {
   const user = db.users.find(u => u.email === email);
   if (!user) return res.status(401).json({ message: '존재하지 않는 계정입니다.' });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
+  if (!await bcrypt.compare(password, user.password)) {
+    return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
+  }
 
   req.session.userId = user.id;
   res.json({ message: '로그인 성공', user: { email: user.email } });
@@ -94,9 +94,11 @@ app.get('/me', (req, res) => {
   res.json({ email: user.email });
 });
 
-// ✅ 인증된 사용자만 접근 가능
+// 인증 미들웨어
 function requireLogin(req, res, next) {
-  if (!req.session.userId) return res.status(401).json({ message: '로그인이 필요합니다.' });
+  if (!req.session.userId) {
+    return res.status(401).json({ message: '로그인이 필요합니다.' });
+  }
   next();
 }
 
@@ -110,11 +112,7 @@ app.get('/items', requireLogin, (req, res) => {
 app.post('/items', requireLogin, upload.single('image'), (req, res) => {
   const db = loadDB();
   const { name, description } = req.body;
-
-  // 업로드된 파일이 있으면 URL을, 없으면 null
-  const imageUrl = req.file
-    ? `/uploads/${req.file.filename}`
-    : null;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   const newItem = {
     id: Date.now(),

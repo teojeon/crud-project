@@ -1,4 +1,6 @@
-const apiUrl = 'http://localhost:3000/items';
+// script.js
+
+const apiUrl = '/items';
 
 async function fetchItems() {
   try {
@@ -26,7 +28,7 @@ async function fetchItems() {
       // 3) 이미지 (있으면)
       if (item.imageUrl) {
         const img = document.createElement('img');
-        img.src = `http://localhost:3000${item.imageUrl}`;
+        img.src = item.imageUrl;      // 상대경로로 변경
         img.style.maxWidth = '200px';
         img.style.display = 'block';
         img.style.margin = '8px 0';
@@ -79,7 +81,8 @@ async function editItem(item) {
   await fetch(`${apiUrl}/${item.id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: newName })
+    body: JSON.stringify({ name: newName }),
+    credentials: 'include'
   });
 
   fetchItems();

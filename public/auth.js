@@ -1,4 +1,4 @@
-const API = 'http://localhost:3000';
+// auth.js
 
 // 요소 참조
 const authModal = document.getElementById('auth-modal');
@@ -22,9 +22,9 @@ loginBtn.addEventListener('click', () => {
 });
 
 logoutBtn.addEventListener('click', async () => {
-  await fetch(`${API}/logout`, {
+  await fetch('/logout', {
     method: 'POST',
-    credentials: 'include'
+    credentials: 'include'      // 세션 쿠키 포함
   });
   updateUI(null);
 });
@@ -45,15 +45,14 @@ authForm.addEventListener('submit', async (e) => {
   const endpoint = isLoginMode ? 'login' : 'signup';
 
   try {
-    const res = await fetch(`${API}/${endpoint}`, {
+    const res = await fetch(`/${endpoint}`, {
       method: 'POST',
+      credentials: 'include',     // 세션 쿠키 포함
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ email, password })
     });
 
     const data = await res.json();
-
     if (!res.ok) {
       alert(data.message || '오류가 발생했습니다.');
       return;
@@ -71,8 +70,8 @@ authForm.addEventListener('submit', async (e) => {
 // ──────────────── 현재 로그인 사용자 확인 ────────────────
 async function checkLogin() {
   try {
-    const res = await fetch(`${API}/me`, {
-      credentials: 'include'
+    const res = await fetch('/me', {
+      credentials: 'include'      // 세션 쿠키 포함
     });
     if (!res.ok) throw new Error('not logged in');
     const data = await res.json();
