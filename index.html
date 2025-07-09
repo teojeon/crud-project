@@ -10,8 +10,12 @@
   <main class="container">
     <h1>Type Anything</h1>
     
-    <form id="item-form">
-      <input type="text" id="item-input" placeholder="할 일을 입력하세요..." required />
+    <!-- enctype 추가, 서버로 직접 POST 전송 -->
+    <form id="item-form" action="http://localhost:3000/items" method="POST" enctype="multipart/form-data">
+      <input type="text" name="name" id="item-input" placeholder="할 일을 입력하세요..." required />
+      <textarea name="description" placeholder="설명"></textarea>
+      <!-- 이미지 업로드 필드 -->
+      <input type="file" name="image" accept="image/*" />
       <button type="submit">추가</button>
     </form>
 
@@ -20,29 +24,30 @@
     </ul>
 
     <!-- 기존 main 아래에 추가 -->
-<div id="auth-modal" class="modal hidden">
-  <div class="modal-content">
-    <h2 id="auth-title">로그인</h2>
-    <form id="auth-form">
-      <input type="email" id="auth-email" placeholder="이메일" required />
-      <input type="password" id="auth-password" placeholder="비밀번호" required />
-      <button type="submit">확인</button>
-    </form>
-    <p class="toggle-auth">
-      계정이 없으신가요? <button id="toggle-auth-mode">회원가입</button>
-    </p>
-  </div>
-</div>
+    <div id="auth-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="auth-title">로그인</h2>
+        <form id="auth-form">
+          <input type="email" id="auth-email" placeholder="이메일" required />
+          <input type="password" id="auth-password" placeholder="비밀번호" required />
+          <button type="submit">확인</button>
+        </form>
+        <p class="toggle-auth">
+          계정이 없으신가요? <button id="toggle-auth-mode">회원가입</button>
+        </p>
+      </div>
+    </div>
 
-<!-- 헤더 오른쪽 상단 -->
-<div id="auth-area" class="auth-area">
-  <span id="auth-user"></span>
-  <button id="login-btn">로그인</button>
-  <button id="logout-btn" class="hidden">로그아웃</button>
-</div>
+    <!-- 헤더 오른쪽 상단 -->
+    <div id="auth-area" class="auth-area">
+      <span id="auth-user"></span>
+      <button id="login-btn">로그인</button>
+      <button id="logout-btn" class="hidden">로그아웃</button>
+    </div>
 
   </main>
- <footer class="site-footer">
+
+  <footer class="site-footer">
     <div class="footer-content">
       <p>회사명: 투닉스(Toonix) | 대표자: 전민철</p>
       <p>사업자등록번호: 551-15-02591</p>
@@ -51,8 +56,8 @@
       <p class="copyright">© 2025 Type Anything. All rights reserved.</p>
     </div>
   </footer>
-<script src="script.js"></script>
-<script src="auth.js"></script>
 
+  <script src="script.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>

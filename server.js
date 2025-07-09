@@ -1,8 +1,11 @@
+// server.js
 const express = require('express');
 const fs = require('fs');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
+const multer  = require('multer');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
@@ -20,6 +23,22 @@ app.use(session({
     maxAge: 1000 * 60 * 60  // 1시간
   }
 }));
+
+// 업로드된 이미지를 제공할 정적 경로 설정
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// multer 설정: 저장 위치(public/uploads)와 파일명 규칙
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const name = path.basename(file.originalname, ext);
+    cb(null, `${Date.now()}_${name}${ext}`);
+  }
+});
+const upload = multer({ storage });
 
 const DB_PATH = './db.json';
 
@@ -39,7 +58,7 @@ app.post('/signup', async (req, res) => {
   if (exists) return res.status(400).json({ message: '이미 등록된 이메일입니다.' });
 
   const hashed = await bcrypt.hash(password, 10);
-  const newUser = { id: Date.now(), email, password: hashed };
+  const newUser = { id: Date.now(), email, password: hashed, role: 'user' };
   db.users.push(newUser);
   saveDB(db);
   req.session.userId = newUser.id;
@@ -75,16 +94,38 @@ app.get('/me', (req, res) => {
   res.json({ email: user.email });
 });
 
-// ✅ 인증된 사용자만 접근 가능 (예시: CRUD 제한)
+// ✅ 인증된 사용자만 접근 가능
 function requireLogin(req, res, next) {
   if (!req.session.userId) return res.status(401).json({ message: '로그인이 필요합니다.' });
   next();
 }
 
-// 기존 CRUD 라우트 예시 (get/post/delete 등)에 requireLogin 추가 가능
+// ✅ 아이템 목록 조회
 app.get('/items', requireLogin, (req, res) => {
   const db = loadDB();
   res.json(db.items);
+});
+
+// ✅ 아이템 생성 (이미지 업로드 포함)
+app.post('/items', requireLogin, upload.single('image'), (req, res) => {
+  const db = loadDB();
+  const { name, description } = req.body;
+
+  // 업로드된 파일이 있으면 URL을, 없으면 null
+  const imageUrl = req.file
+    ? `/uploads/${req.file.filename}`
+    : null;
+
+  const newItem = {
+    id: Date.now(),
+    name,
+    description,
+    imageUrl
+  };
+  db.items.push(newItem);
+  saveDB(db);
+
+  res.status(201).json(newItem);
 });
 
 // 서버 실행
