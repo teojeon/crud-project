@@ -99,5 +99,15 @@ async function deleteItem(id) {
   fetchItems();
 }
 
+const fileInput = document.getElementById('file-input');
+const fileNameSpan = document.querySelector('.file-input-name');
+
+fileInput.addEventListener('change', () => {
+  fileNameSpan.textContent = fileInput.files[0]
+    ? fileInput.files[0].name
+    : '선택된 파일 없음';
+});
+
+
 // 초기 데이터 로드
 fetchItems();

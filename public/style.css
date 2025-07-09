@@ -43,8 +43,40 @@ h1 {
   border-color: #00b894;
 }
 
+/* ── 파일 입력 컨테이너 ── */
+.file-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-input-container input[type="file"] {
+  display: none;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 10px 16px;
+  background-color: #4d7cff;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.file-input-label:hover {
+  background-color: #375bcc;
+}
+
+.file-input-name {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
 /* ── 추가 버튼 ── */
-#item-form button {
+.add-btn {
   padding: 12px 24px;
   background-color: #00b894;
   color: #fff;
@@ -55,7 +87,7 @@ h1 {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-#item-form button:hover {
+.add-btn:hover {
   background-color: #019875;
 }
 
@@ -69,8 +101,8 @@ h1 {
 /* ── 각 아이템 ── */
 .item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 16px;
   padding: 16px 20px;
   margin-bottom: 12px;
   background-color: #ffffff;
@@ -83,15 +115,36 @@ h1 {
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* ── 제목 텍스트 ── */
 .item span {
-  flex: 1;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: #333;
+  margin: 0;
+}
+
+/* ── 설명 텍스트 ── */
+.item p {
+  flex: 1;
+  margin: 4px 0 0;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* ── 이미지 스타일 개선 ── */
+.item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 /* ── 수정/삭제 버튼 ── */
 .actions {
+  margin-left: auto;
   display: flex;
   gap: 8px;
 }
@@ -126,7 +179,7 @@ h1 {
   border-top: 1px solid #ddd;
   padding: 30px 20px;
   margin-top: 60px;
-  background-color: #fafafa; /* body 배경색과 동일 */
+  background-color: #fafafa;
   font-size: 0.85rem;
   color: #666;
   text-align: center;

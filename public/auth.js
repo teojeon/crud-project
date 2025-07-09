@@ -29,6 +29,7 @@ logoutBtn.addEventListener('click', async () => {
   updateUI(null);
 });
 
+// 로그인/회원가입 모드 전환
 toggleAuthBtn.addEventListener('click', () => {
   isLoginMode = !isLoginMode;
   updateAuthMode();
@@ -58,7 +59,9 @@ authForm.addEventListener('submit', async (e) => {
       return;
     }
 
+    // 로그인/회원가입 성공 시 UI 업데이트 및 이전 로그(아이템) 불러오기
     updateUI(data.user);
+    fetchItems();                // ← 추가된 부분
     authModal.classList.add('hidden');
     authForm.reset();
   } catch (err) {
@@ -75,7 +78,10 @@ async function checkLogin() {
     });
     if (!res.ok) throw new Error('not logged in');
     const data = await res.json();
+
+    // 이미 로그인된 상태라면 UI 업데이트 및 이전 로그 불러오기
     updateUI(data);
+    fetchItems();                // ← 추가된 부분
   } catch {
     updateUI(null);
   }
